@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CeritaKita</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+ 
+    <style>
+      #skip-button {
+        position: fixed;
+        top: 2.5rem;
+        left: 6%;
+        transform: translateX(-50%);
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 1rem;
+        z-index: 1000;
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+      }
+      #skip-button.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #skip-button:focus {
+        outline: 3px solid #fff;
+        outline-offset: 3px;
+      }
+
+      /* Basic layout styling */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+      header {
+        background: #333;
+        color: white;
+        padding: 1rem;
+      }
+      .brand-name {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1.25rem;
+      }
+      nav.navigation-drawer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 1rem;
+      }
+      nav.navigation-drawer a {
+        color: white;
+        text-decoration: none;
+      }
+      #drawer-button {
+        display: none; /* example: hidden on desktop */
+      }
+
+      main.main-content {
+        padding: 2rem;
+        min-height: 80vh;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-DukpdJEn.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DzbOWWjp.css">
+  <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
+  <body>
+    <button id="skip-button" type="button" aria-label="Skip to main content">
+      Skip to Main Content
+    </button>
+
+    <header>
+      <div class="main-header container">
+        <a class="brand-name" href="#/">CeritaKita</a>
+        <nav
+          id="navigation-drawer"
+          class="navigation-drawer"
+          role="navigation"
+          aria-label="Main Navigation"
+        >
+          <ul id="nav-list" class="nav-list">
+            <li><a href="#/">Homepage</a></li>
+            <li><a href="#/about">About</a></li>
+            <li><a id="auth-button" href="#/login">Login</a></li>
+          </ul>
+        </nav>
+        <button
+          id="drawer-button"
+          class="drawer-button"
+          aria-label="Toggle navigation menu"
+        >
+          ☰
+        </button>
+      </div>
+    </header>
+
+    <main
+      id="main-content"
+      class="main-content"
+      tabindex="-1"
+      role="main"
+    ></main>
+
+    <div id="push-notification-tools"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const skipButton = document.getElementById("skip-button");
+        const mainContent = document.getElementById("main-content");
+
+        function hideSkipButton() {
+          skipButton.classList.add("hidden");
+        }
+
+        function showSkipButton() {
+          skipButton.classList.remove("hidden");
+        }
+
+        skipButton.addEventListener("click", () => {
+          mainContent.setAttribute("tabindex", "-1");
+          mainContent.focus();
+          hideSkipButton();
+        });
+
+        window.addEventListener("scroll", () => {
+          if (window.scrollY > 10) {
+            hideSkipButton();
+          } else {
+            showSkipButton();
+          }
+        });
+
+        mainContent.addEventListener("focus", () => {
+          hideSkipButton();
+        });
+
+        if (window.scrollY <= 10) {
+          showSkipButton();
+        } else {
+          hideSkipButton();
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const authButton = document.getElementById("auth-button");
+
+        function updateAuthButton() {
+          const token = sessionStorage.getItem("token");
+
+          if (token) {
+            authButton.textContent = "Logout";
+            authButton.href = "#";
+            authButton.onclick = (event) => {
+              event.preventDefault();
+              sessionStorage.removeItem("token");
+              window.location.href = "#/login";
+              window.location.reload();
+            };
+          } else {
+            authButton.textContent = "Login";
+            authButton.href = "#/login";
+            authButton.onclick = null;
+          }
+        }
+
+        updateAuthButton();
+      });
+    </script>
+  </body>
+</html>
